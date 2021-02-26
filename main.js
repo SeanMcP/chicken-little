@@ -29,9 +29,9 @@ function drawGround() {
 
   for (let i = 0; i <= xMax; i++) {
     if (i === x) {
-      output += "🐥";
+      output += "C";
     } else {
-      output += " ";
+      output += "–";
     }
   }
 
@@ -39,15 +39,21 @@ function drawGround() {
 }
 
 function drawSky() {
-  let previous = sky.textContent.split("\n") || [];
-  let next = previous.slice(0, yMax - 1);
+  const previous = sky.textContent.split("\n") || [];
+  if (previous[previous.length - 1][x] === "X") {
+    clearInterval(interval);
+    return alert("Game over");
+  }
+
+  const next = previous.slice(0, yMax);
 
   let output = "";
-  let randomX = Math.floor(Math.random() * xMax);
+  let randomX =
+    Math.random() > 0.4 ? Math.floor(Math.random() * (xMax + 1)) : undefined;
 
   for (let i = 0; i <= xMax; i++) {
     if (randomX === i) {
-      output += "☁️";
+      output += "X";
     } else {
       output += " ";
     }
@@ -57,13 +63,14 @@ function drawSky() {
 }
 
 let initialSky = "";
-for (let i = 0; i < yMax; i++) {
-  for (let j = 0; j < xMax; j++) {
+for (let i = 0; i <= yMax; i++) {
+  for (let j = 0; j <= xMax; j++) {
     initialSky += " ";
   }
-  if (i < yMax - 1) initialSky += "\n";
+  if (i !== yMax) initialSky += "\n";
 }
 
 sky.textContent = initialSky;
+drawGround();
 
-setInterval(draw, 500);
+const interval = setInterval(draw, 500);
